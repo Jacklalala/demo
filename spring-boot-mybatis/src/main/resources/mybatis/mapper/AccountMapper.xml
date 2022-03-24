@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jack.mapper.AccountMapper" >
+    <resultMap id="BaseResultMap" type="com.jack.model.Account" >
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="userName" property="userName" jdbcType="VARCHAR" />
+        <result column="passWord" property="passWord" jdbcType="VARCHAR" />
+        <result column="role" property="role" javaType="com.jack.enums.AccountRoleEnum"/>
+        <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id, userName, passWord, role, avatar
+    </sql>
+
+    <sql id="Base_Where_List">
+        <if test="userName != null  and userName != ''">
+            and userName = #{userName}
+        </if>
+        <if test="role != null and role != ''">
+            and role = #{role}
+        </if>
+    </sql>
+
+    <select id="getAll" resultMap="BaseResultMap"  >
+       SELECT 
+       <include refid="Base_Column_List" />
+	   FROM account
+    </select>
+
+    <select id="getCount" resultType="Integer" parameterType="com.jack.dto.AccountDto">
+        select
+        count(1)
+        from account
+        where 1=1
+        <include refid="Base_Where_List" />
+    </select>
+
+    <select id="getOne" parameterType="Long" resultMap="BaseResultMap" >
+        SELECT 
+       <include refid="Base_Column_List" />
+	   FROM account
+	   WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.jack.model.Account" >
+       INSERT INTO 
+       		account
+       		(userName,passWord,role)
+       	VALUES
+       		(#{userName}, #{passWord}, #{role})
+    </insert>
+    
+    <update id="update" parameterType="com.jack.model.Account" >
+       UPDATE 
+       		account
+       SET 
+       	<if test="userName != null">userName = #{userName},</if>
+       	<if test="passWord != null">passWord = #{passWord},</if>
+        avatar = #{avatar}
+       WHERE 
+       		id = #{id}
+    </update>
+    
+    <delete id="delete" parameterType="Long" >
+       DELETE FROM
+       		 account
+       WHERE 
+       		 id =#{id}
+    </delete>
+
+</mapper>
